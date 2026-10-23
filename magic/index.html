@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Willa &amp; Coal's Magical House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --night: #0d1330;
+        --night-deep: #080d22;
+        --parchment: #f8ecd2;
+        --parchment-soft: #fdf4de;
+        --ink: #43301d;
+        --ink-soft: #6d543a;
+        --amber: #f0a83e;
+        --amber-deep: #c97a24;
+        --rust: #b4502a;
+        --gold: #d9a94f;
+        --gold-bright: #f4cd72;
+        --cream-text: #fdf3da;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { height: 100%; }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(120% 60% at 50% 0%, #1b2650 0%, var(--night) 55%, var(--night-deep) 100%);
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--cream-text);
+        overflow: hidden;
+      }
+
+      /* ---------- Stage ---------- */
+      .stage {
+        position: relative;
+        width: min(100vw, 480px);
+        height: 100dvh;
+        margin: 0 auto;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
+        background: var(--night);
+        overflow: hidden;
+      }
+
+      /* ---------- Screens ---------- */
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.55s ease, visibility 0.55s;
+      }
+      .screen.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      /* ---------- Full-frame painting ----------
+         The frame matches the artwork's aspect ratio exactly, so
+         percentage hotspots always land on the painted features. */
+      .frame {
+        position: relative;
+        flex: 0 0 auto;
+        width: min(100vw, 480px, calc(100dvh * 1206 / 2143));
+        aspect-ratio: 1206 / 2143;
+        overflow: hidden;
+        background: var(--night-deep);
+        animation: kenburns 34s ease-in-out infinite alternate;
+        will-change: transform;
+      }
+      .frame > img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      @keyframes kenburns {
+        from { transform: scale(1); }
+        to   { transform: scale(1.045); }
+      }
+
+      /* ---------- Parchment ribbons (overlaid on the painting) ---------- */
+      .ribbon {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        width: max-content;
+        max-width: 92%;
+        background: linear-gradient(180deg, var(--parchment-soft) 0%, var(--parchment) 100%);
+        color: var(--ink);
+        border: 2px solid var(--gold);
+        border-radius: 14px;
+        padding: 10px 16px;
+        text-align: center;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+      }
+      .ribbon h1 {
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.24rem;
+        font-weight: 700;
+        line-height: 1.25;
+        margin: 0;
+      }
+      .ribbon h2 {
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.14rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 0;
+      }
+      .ribbon .ribbon-sub {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: var(--ink-soft);
+      }
+      .ribbon .ribbon-task {
+        margin: 0;
+        font-family: "Lora", Georgia, serif;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+      .ribbon .progress-line {
+        margin: 4px 0 0;
+        font-size: 0.88rem;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        color: var(--rust);
+      }
+
+      /* ---------- Hotspots on the painting ---------- */
+      .hotspot {
+        position: absolute;
+        z-index: 4;
+        appearance: none;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 20px;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .hotspot::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        border: 2px solid rgba(244, 205, 114, 0.4);
+        box-shadow: inset 0 0 16px rgba(240, 168, 62, 0.12);
+        animation: hotspot-pulse 2.4s ease-in-out infinite;
+        transition: background 0.15s ease;
+      }
+      @keyframes hotspot-pulse {
+        0%, 100% {
+          border-color: rgba(244, 205, 114, 0.35);
+          box-shadow: inset 0 0 16px rgba(240, 168, 62, 0.12), 0 0 0 rgba(244, 205, 114, 0);
+        }
+        50% {
+          border-color: rgba(244, 205, 114, 0.95);
+          box-shadow: inset 0 0 34px rgba(240, 168, 62, 0.45), 0 0 24px rgba(244, 205, 114, 0.55);
+        }
+      }
+      .hotspot:active::before { background: rgba(244, 205, 114, 0.28); }
+      .hotspot:focus-visible { outline: 3px solid var(--gold-bright); outline-offset: 2px; }
+
+      /* Entrance door lighting up before the Hall fades in */
+      .door-glow {
+        position: absolute;
+        z-index: 3;
+        border-radius: 24px;
+        background: radial-gradient(60% 60% at 50% 45%, rgba(255, 214, 130, 0.95) 0%, rgba(240, 168, 62, 0.55) 45%, rgba(240, 168, 62, 0) 75%);
+        mix-blend-mode: screen;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+        pointer-events: none;
+      }
+      .door-glow.lit { opacity: 1; }
+      .hotspot.lit::before {
+        animation: none;
+        border-color: var(--gold-bright);
+        background: rgba(255, 205, 105, 0.3);
+        box-shadow: inset 0 0 60px rgba(255, 190, 80, 0.75), 0 0 44px rgba(244, 205, 114, 0.9);
+      }
+
+      .hs-chip {
+        position: absolute;
+        left: 50%;
+        bottom: 7px;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(253, 244, 222, 0.96);
+        color: var(--ink);
+        border: 1.5px solid var(--gold);
+        font-family: "Nunito", system-ui, sans-serif;
+        font-size: 0.68rem;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        padding: 4px 8px;
+        border-radius: 999px;
+        white-space: nowrap;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+        pointer-events: none;
+      }
+      .hs-chip-lg {
+        bottom: 12px;
+        font-size: 0.98rem;
+        padding: 11px 22px;
+        border-width: 2px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), 0 0 18px rgba(240, 168, 62, 0.45);
+      }
+
+      /* Completed door: a small gold star overlaid on the door */
+      .hotspot.done {
+        pointer-events: none;
+        cursor: default;
+      }
+      .hotspot.done::before {
+        animation: none;
+        border-color: rgba(244, 205, 114, 0);
+        box-shadow: none;
+        background: transparent;
+      }
+      .done-star {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 2;
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(0 0 7px rgba(244, 205, 114, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        pointer-events: none;
+      }
+
+      /* ---------- Hidden Magic Door reveal (overlaid on the Hall painting) ---------- */
+      .magic-reveal {
+        position: absolute;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        z-index: 6;
+        width: 88%;
+        max-width: 340px;
+        background: linear-gradient(180deg, var(--parchment-soft) 0%, var(--parchment) 100%);
+        color: var(--ink);
+        border: 2px solid var(--gold);
+        border-radius: 18px;
+        padding: 14px 16px 16px;
+        text-align: center;
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.55), 0 0 30px rgba(240, 168, 62, 0.4);
+      }
+      .magic-reveal[hidden] { display: none; }
+      .magic-door-shape {
+        width: 58px;
+        height: 84px;
+        margin: 0 auto 8px;
+        border-radius: 29px 29px 7px 7px;
+        border: 2px solid var(--gold-bright);
+        background:
+          radial-gradient(70% 55% at 50% 38%, #fff3c4 0%, var(--gold-bright) 42%, var(--amber) 78%, var(--amber-deep) 100%);
+        box-shadow: 0 0 26px rgba(244, 205, 114, 0.95), 0 0 60px rgba(240, 168, 62, 0.55), inset 0 0 18px rgba(255, 248, 220, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: doorglow 2.2s ease-in-out infinite;
+      }
+      @keyframes doorglow {
+        0%, 100% { box-shadow: 0 0 20px rgba(244, 205, 114, 0.8), 0 0 46px rgba(240, 168, 62, 0.45), inset 0 0 14px rgba(255, 248, 220, 0.7); }
+        50%      { box-shadow: 0 0 34px rgba(244, 205, 114, 1), 0 0 74px rgba(240, 168, 62, 0.7), inset 0 0 22px rgba(255, 248, 220, 0.95); }
+      }
+      .magic-door-shape svg { width: 26px; height: 26px; }
+      .magic-reveal-title {
+        margin: 0;
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.14rem;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #7c3f14;
+      }
+      .magic-reveal-sub {
+        margin: 4px 0 0;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--ink-soft);
+      }
+      .btn-discover {
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        margin-top: 12px;
+        padding: 13px 26px;
+        border-radius: 999px;
+        font-family: "Nunito", system-ui, sans-serif;
+        font-weight: 900;
+        font-size: 1rem;
+        color: #3a2405;
+        background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 55%, var(--amber-deep) 135%);
+        box-shadow: 0 0 0 2px rgba(244, 205, 114, 0.55), 0 0 24px rgba(240, 168, 62, 0.7);
+        animation: magicpulse 2.2s ease-in-out infinite;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn-discover:active { transform: scale(0.97); }
+      @keyframes magicpulse {
+        0%, 100% { box-shadow: 0 0 0 2px rgba(244, 205, 114, 0.5), 0 0 18px rgba(240, 168, 62, 0.55); }
+        50%      { box-shadow: 0 0 0 3px rgba(244, 205, 114, 0.85), 0 0 38px rgba(240, 168, 62, 0.95); }
+      }
+
+      /* ---------- Room choice cards (overlaid row at the bottom of the painting) ---------- */
+      .choices-row {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 12px;
+        z-index: 6;
+        display: flex;
+        gap: 8px;
+      }
+      .choices-row[hidden] { display: none; }
+      .choice-card {
+        flex: 1 1 0;
+        appearance: none;
+        cursor: pointer;
+        min-height: 80px;
+        padding: 10px 4px 9px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        background: linear-gradient(180deg, var(--parchment-soft) 0%, var(--parchment) 100%);
+        border: 2px solid var(--gold);
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        font-family: "Nunito", system-ui, sans-serif;
+        transition: transform 0.15s ease, filter 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .choice-card:active { transform: scale(0.96); filter: brightness(1.05); }
+      .choice-card:focus-visible { outline: 3px solid var(--gold-bright); outline-offset: 2px; }
+      .choice-card svg {
+        width: 28px;
+        height: 28px;
+        color: var(--amber-deep);
+        flex: 0 0 auto;
+      }
+      .choice-card .choice-label {
+        font-size: 0.78rem;
+        font-weight: 900;
+        line-height: 1.18;
+        color: var(--ink);
+        text-align: center;
+      }
+
+      /* ---------- Feedback overlay (on the painting) ---------- */
+      .feedback-overlay {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 26px;
+        z-index: 7;
+        background: linear-gradient(180deg, var(--parchment-soft) 0%, var(--parchment) 100%);
+        color: var(--ink);
+        border: 2px solid var(--gold);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+      }
+      .feedback-overlay[hidden] { display: none; }
+      .feedback-overlay .feedback-text {
+        margin: 0;
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        text-align: center;
+      }
+      .back-chip {
+        position: absolute;
+        top: -17px;
+        right: 14px;
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        padding: 9px 15px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #cf6a30 0%, var(--rust) 100%);
+        color: #fff8ea;
+        font-family: "Nunito", system-ui, sans-serif;
+        font-weight: 900;
+        font-size: 0.88rem;
+        box-shadow: 0 6px 16px rgba(120, 45, 15, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .back-chip:active { transform: scale(0.96); }
+
+      /* ---------- Sparkles ---------- */
+      .sparkle-field {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 3;
+      }
+      .sparkle {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, #fff6d8 0%, var(--gold-bright) 45%, rgba(244, 205, 114, 0) 72%);
+        opacity: 0;
+        animation: sparklefloat linear infinite;
+      }
+      @keyframes sparklefloat {
+        0%   { transform: translateY(12px) scale(0.6); opacity: 0; }
+        18%  { opacity: 0.95; }
+        55%  { opacity: 0.7; }
+        100% { transform: translateY(-46px) scale(1.05); opacity: 0; }
+      }
+
+      /* ---------- Ending: Magic Card over the magic-door painting ---------- */
+      .screen-card {
+        display: block;
+        overflow-y: auto;
+        background: var(--night-deep);
+      }
+      .card-backdrop {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+      }
+      .card-scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(8, 11, 28, 0.42) 0%, rgba(8, 11, 28, 0.55) 60%, rgba(8, 11, 28, 0.72) 100%);
+      }
+      .screen-card .sparkle-field { z-index: 2; }
+      .card-wrap {
+        position: relative;
+        z-index: 4;
+        padding: 30px 22px calc(34px + env(safe-area-inset-bottom));
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .card-heading {
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.55rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 0;
+        color: var(--cream-text);
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+      }
+      .card-date {
+        margin: 6px 0 0;
+        font-weight: 800;
+        font-size: 0.98rem;
+        letter-spacing: 0.06em;
+        color: var(--gold-bright);
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+      }
+      .magic-card {
+        position: relative;
+        margin-top: 20px;
+        background: linear-gradient(180deg, #fdf6e0 0%, var(--parchment) 100%);
+        border: 3px solid var(--gold);
+        outline: 2px solid rgba(244, 205, 114, 0.5);
+        outline-offset: 5px;
+        border-radius: 20px;
+        padding: 14px 14px 30px;
+        color: var(--ink);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+        animation: cardglow 3s ease-in-out infinite;
+      }
+      @keyframes cardglow {
+        0%, 100% { box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55), 0 0 22px rgba(240, 168, 62, 0.35); }
+        50%      { box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55), 0 0 44px rgba(240, 168, 62, 0.65); }
+      }
+      .magic-card .card-art {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        border: 2px solid rgba(201, 122, 36, 0.5);
+      }
+      .magic-card .card-title {
+        font-family: "Lora", Georgia, serif;
+        margin: 16px 0 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #7c3f14;
+      }
+      .magic-card .card-desc {
+        margin: 8px 6px 0;
+        font-family: "Lora", Georgia, serif;
+        font-size: 1.06rem;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+      .play-again-chip {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translate(-50%, 50%);
+        appearance: none;
+        border: 2px solid var(--gold);
+        cursor: pointer;
+        padding: 11px 26px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--parchment-soft) 0%, var(--parchment) 100%);
+        color: var(--ink);
+        font-family: "Nunito", system-ui, sans-serif;
+        font-weight: 900;
+        font-size: 1rem;
+        white-space: nowrap;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .play-again-chip:active { transform: translate(-50%, 50%) scale(0.96); }
+      .recap {
+        margin-top: 40px;
+        background: rgba(248, 236, 210, 0.97);
+        color: var(--ink);
+        border-radius: 16px;
+        border: 2px solid rgba(217, 169, 79, 0.65);
+        padding: 16px 18px;
+        text-align: left;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.4);
+      }
+      .recap h3 {
+        font-family: "Lora", Georgia, serif;
+        margin: 0;
+        font-size: 1.08rem;
+        color: #7c3f14;
+      }
+      .recap ul {
+        margin: 10px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .recap li {
+        padding: 6px 0;
+        font-weight: 700;
+        font-size: 0.97rem;
+        line-height: 1.4;
+        border-top: 1px dashed rgba(150, 110, 55, 0.35);
+      }
+      .recap li:first-child { border-top: none; }
+      .recap li .recap-room { color: var(--rust); font-weight: 900; }
+      .tomorrow {
+        margin: 18px 0 0;
+        font-family: "Lora", Georgia, serif;
+        font-style: italic;
+        font-size: 1.05rem;
+        color: var(--cream-text);
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.75);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .frame { animation: none; }
+        .hotspot::before { animation: none; }
+        .magic-door-shape { animation: none; }
+        .btn-discover { animation: none; }
+        .magic-card { animation: none; }
+        .sparkle { animation: none; opacity: 0.5; }
+        .screen { transition: none; }
+        .door-glow { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage" id="stage">
+
+      <!-- ======== SCENE 01 · THE ENTRANCE ======== -->
+      <section class="screen active" id="screen-entrance" aria-label="The Entrance">
+        <div class="frame">
+          <img src="assets/02-entrance.jpg" alt="Willa, wearing her tall hat and holding a lantern, stands with Coal the black cat before the glowing front door of the house, surrounded by autumn leaves and pumpkins" />
+          <div class="ribbon">
+            <h1>Welcome to Willa &amp; Coal's Magical House!</h1>
+            <p class="ribbon-sub">Four rooms. Four little choices. One magical surprise.</p>
+          </div>
+          <div class="door-glow" id="entrance-door-glow" style="left:29%; top:37%; width:43%; height:42%;"></div>
+          <button class="hotspot" id="hs-entrance-door" type="button" style="left:29%; top:37%; width:43%; height:42%;" aria-label="Enter the House">
+            <span class="hs-chip hs-chip-lg">Enter the House</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ======== SCENE 02 · THE HALL ======== -->
+      <section class="screen" id="screen-hall" aria-label="The Hall">
+        <div class="frame">
+          <img src="assets/03-hall.jpg" alt="The great hall of the house, with four wooden doors marked with a moon, a book, a cooking pot and a bed, beneath a balcony and a tall window full of stars" />
+          <div class="ribbon">
+            <h2>Where shall we go first?</h2>
+            <p class="progress-line" id="hall-progress">0/4 Rooms Completed</p>
+          </div>
+          <div id="hall-hotspots"></div>
+          <div class="magic-reveal" id="magic-reveal" hidden>
+            <div class="magic-door-shape" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="#fff6d8" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.7L12 17.7l-6 3.2 1.3-6.7-5-4.7 6.8-.8z"/></svg>
+            </div>
+            <p class="magic-reveal-title">You've discovered all four rooms!</p>
+            <p class="magic-reveal-sub">One last surprise is waiting for you.</p>
+            <button class="btn-discover" id="btn-discover" type="button">Discover My Magic</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== ROOMS ======== -->
+      <section class="screen" id="screen-room" aria-label="Room">
+        <div class="frame">
+          <img id="room-img" src="assets/04-observatory.jpg" alt="" />
+          <div class="ribbon" id="room-ribbon">
+            <p class="ribbon-task" id="room-task"></p>
+          </div>
+          <div class="choices-row" id="room-choices"></div>
+          <div class="feedback-overlay" id="room-feedback-overlay" hidden>
+            <p class="feedback-text" id="room-feedback"></p>
+            <button class="back-chip" id="btn-back-hall" type="button">Back to Hall</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== ENDING · MAGIC CARD over the magic-door painting ======== -->
+      <section class="screen screen-card" id="screen-card" aria-label="Your Magic Card">
+        <img class="card-backdrop" src="assets/08-magic-door.jpg" alt="" />
+        <div class="card-scrim"></div>
+        <div class="sparkle-field" data-sparkles></div>
+        <div class="card-wrap">
+          <h2 class="card-heading">Your Magic Card for Tonight</h2>
+          <p class="card-date" id="card-date"></p>
+          <div class="magic-card">
+            <img class="card-art" id="card-art" src="assets/08-magic-door.jpg" alt="" />
+            <h3 class="card-title" id="card-title"></h3>
+            <p class="card-desc" id="card-desc"></p>
+            <button class="play-again-chip" id="btn-play-again" type="button">Play Again</button>
+          </div>
+          <div class="recap">
+            <h3>Your night at the house:</h3>
+            <ul id="card-recap"></ul>
+          </div>
+          <p class="tomorrow">Come back tomorrow — a new night, a new card.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var GOLD_STAR = '<svg class="done-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.7L12 17.7l-6 3.2 1.3-6.7-5-4.7 6.8-.8z" fill="#f4cd72" stroke="#c97a24" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+
+        var ICONS = {
+          shootingStar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.5 3.5l1 2.3 2.5.3-1.9 1.7.5 2.5-2.1-1.2-2.1 1.2.5-2.5L12 6.1l2.5-.3z"/><path d="M11 13l-3.5 3.5M13.5 14.5L8 20M9 11L4.5 15.5"/></svg>',
+          planet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5.2"/><ellipse cx="12" cy="12" rx="10" ry="3.4" transform="rotate(-18 12 12)"/></svg>',
+          lantern: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4M10.5 21.5h3"/><path d="M8 5.5h8l1 3v7l-1 3H8l-1-3v-7z"/><path d="M7 8.5h10M7 15.5h10"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>',
+          book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-1.6-1.5-3.8-2-6-2v13c2.2 0 4.4.5 6 2 1.6-1.5 3.8-2 6-2V4c-2.2 0-4.4.5-6 2z"/><path d="M12 6v13"/></svg>',
+          letter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12.5" rx="1.6"/><path d="M4.5 7.5L12 13l7.5-5.5"/></svg>',
+          map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/><path d="M17.2 9.2l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2z" fill="currentColor" stroke="none"/></svg>',
+          pumpkin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c.8-1.9 2.4-2.7 4-2.2-.5.9-.9 1.5-1 2.2"/><ellipse cx="12" cy="14.8" rx="7.6" ry="5.9"/><path d="M8.4 9.6c-1.1 3.3-1.1 7 0 10.3M15.6 9.6c1.1 3.3 1.1 7 0 10.3"/></svg>',
+          moonCookie: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 14.5A8 8 0 1 1 9.5 4.5a6.4 6.4 0 0 0 10 10z"/><path d="M17.5 3.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="currentColor" stroke="none"/></svg>',
+          starTea: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 10.5h12v3.7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z"/><path d="M16.5 11.5h1.2a2.6 2.6 0 0 1 0 5.2h-1.4"/><path d="M10.5 11.8l.8 1.7 1.8.2-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.2z" fill="currentColor" stroke="none"/><path d="M8 3.8c0 1-.8 1.3-.8 2.3M12.5 3.8c0 1-.8 1.3-.8 2.3"/></svg>',
+          moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13.2A8.5 8.5 0 1 1 10.8 4a6.8 6.8 0 0 0 9.2 9.2z"/></svg>',
+          star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.4 5.3 5.8.6-4.3 3.9 1.2 5.7L12 16l-5.1 3 1.2-5.7L3.8 9.4l5.8-.6z"/></svg>',
+          compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"/></svg>'
+        };
+
+        var ROOMS = [
+          {
+            id: "observatory",
+            name: "Observatory",
+            img: "assets/04-observatory.jpg",
+            alt: "The observatory under a glass dome, where Willa peers through a brass telescope at the full moon while Coal sits on a stack of books among hanging star lanterns",
+            task: "You spot something glowing in the sky. What is it?",
+            door: { left: 8, top: 40, width: 19, height: 27 },
+            choices: [
+              {
+                text: "A shooting star",
+                icon: "shootingStar",
+                type: "star",
+                feedback: "A little wish is on its way."
+              },
+              {
+                text: "A mysterious planet",
+                icon: "planet",
+                type: "star",
+                feedback: "A new world is waiting to be discovered."
+              },
+              {
+                text: "A tiny flying lantern",
+                icon: "lantern",
+                type: "moon",
+                feedback: "Someone is sending a light into the night."
+              }
+            ]
+          },
+          {
+            id: "library",
+            name: "Library",
+            img: "assets/05-library.jpg",
+            alt: "The library, its tall shelves full of old books, where Willa reads a glowing book by candlelight with Coal sitting on a pile of volumes beside her",
+            task: "An old book opens by itself. What do you find inside?",
+            door: { left: 29, top: 40, width: 19, height: 27 },
+            choices: [
+              {
+                text: "A forgotten fairy tale",
+                icon: "book",
+                type: "story",
+                feedback: "Some stories are waiting to be remembered."
+              },
+              {
+                text: "A letter never sent",
+                icon: "letter",
+                type: "hearth",
+                feedback: "Some words still carry a little magic."
+              },
+              {
+                text: "A map to a secret garden",
+                icon: "map",
+                type: "story",
+                feedback: "Every secret path begins with curiosity."
+              }
+            ]
+          },
+          {
+            id: "kitchen",
+            name: "Kitchen",
+            img: "assets/06-kitchen.jpg",
+            alt: "The warm kitchen with a crackling fireplace, where Willa stirs a big bubbling pot on a wooden table while Coal watches, surrounded by pumpkins, jars and lanterns",
+            task: "What should we make on this magical night?",
+            door: { left: 52, top: 40, width: 22, height: 27 },
+            choices: [
+              {
+                text: "Pumpkin Soup",
+                icon: "pumpkin",
+                type: "hearth",
+                feedback: "A warm little spell fills the kitchen."
+              },
+              {
+                text: "Moon Cookies",
+                icon: "moonCookie",
+                type: "moon",
+                feedback: "The cookies sparkle like tiny moons."
+              },
+              {
+                text: "Star Tea",
+                icon: "starTea",
+                type: "hearth",
+                feedback: "A cup of starlight warms your hands."
+              }
+            ]
+          },
+          {
+            id: "bedroom",
+            name: "Bedroom",
+            img: "assets/07-bedroom.jpg",
+            alt: "The cozy bedroom with a star-patterned quilt and hanging moon and star lanterns, where Willa lies on the bed reading under the light of the full moon, with Coal beside her",
+            task: "Before bedtime, what little magic would you choose?",
+            door: { left: 78, top: 40, width: 19, height: 27 },
+            choices: [
+              {
+                text: "A peaceful dream",
+                icon: "moon",
+                type: "moon",
+                feedback: "The night wraps you in a gentle dream."
+              },
+              {
+                text: "A wish for tomorrow",
+                icon: "star",
+                type: "star",
+                feedback: "A tiny hope begins to glow."
+              },
+              {
+                text: "One more little adventure",
+                icon: "compass",
+                type: "story",
+                feedback: "Perhaps the best story hasn't started yet."
+              }
+            ]
+          }
+        ];
+
+        var CARDS = {
+          moon: {
+            title: "The Moonlight Dreamer",
+            desc: "You find magic in quiet moments and little wonders.",
+            img: "assets/08-magic-door.jpg",
+            alt: "Card art: the open magic door pouring golden light toward a moonlit castle, with Willa and Coal at the threshold"
+          },
+          star: {
+            title: "The Starlight Seeker",
+            desc: "You follow every spark of curiosity — and it always leads somewhere wonderful.",
+            img: "assets/04-observatory.jpg",
+            alt: "Card art: Willa at the telescope in the observatory, under the full moon and hanging star lanterns"
+          },
+          story: {
+            title: "The Story Weaver",
+            desc: "You collect stories wherever you go, and the world feels richer for it.",
+            img: "assets/05-library.jpg",
+            alt: "Card art: Willa reading a glowing book in the candlelit library, with Coal beside her"
+          },
+          hearth: {
+            title: "The Cozy Hearth Keeper",
+            desc: "Your magic is warmth: good food, soft light, and a home full of love.",
+            img: "assets/06-kitchen.jpg",
+            alt: "Card art: Willa stirring a golden pot in the warm, firelit kitchen, with Coal watching"
+          }
+        };
+
+        // Tie-break order: Story, then Hearth, then Moon, then Star.
+        var TIE_ORDER = ["story", "hearth", "moon", "star"];
+
+        var state;
+        function resetState() {
+          state = {
+            visited: {},
+            visitedCount: 0,
+            scores: { moon: 0, star: 0, story: 0, hearth: 0 },
+            picks: [] // { room, choice }
+          };
+        }
+        resetState();
+
+        var currentRoom = null;
+
+        function $(id) { return document.getElementById(id); }
+
+        function showScreen(id) {
+          var screens = document.querySelectorAll(".screen");
+          for (var i = 0; i < screens.length; i++) {
+            screens[i].classList.toggle("active", screens[i].id === id);
+          }
+          var active = $(id);
+          if (active) { active.scrollTop = 0; }
+          window.scrollTo(0, 0);
+        }
+
+        /* ---------- Hall: the painted doors are the buttons ---------- */
+        function renderHall() {
+          $("hall-progress").textContent = state.visitedCount + "/4 Rooms Completed";
+          var wrap = $("hall-hotspots");
+          wrap.innerHTML = "";
+          ROOMS.forEach(function (room) {
+            var done = !!state.visited[room.id];
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "hotspot" + (done ? " done" : "");
+            btn.style.left = room.door.left + "%";
+            btn.style.top = room.door.top + "%";
+            btn.style.width = room.door.width + "%";
+            btn.style.height = room.door.height + "%";
+            btn.disabled = done;
+            btn.setAttribute("aria-label", room.name + (done ? " (completed)" : " — tap the door"));
+            btn.innerHTML =
+              '<span class="hs-chip">' + room.name + "</span>" +
+              (done ? GOLD_STAR : "");
+            if (!done) {
+              btn.addEventListener("click", function () { enterRoom(room); });
+            }
+            wrap.appendChild(btn);
+          });
+          $("magic-reveal").hidden = state.visitedCount < 4;
+        }
+
+        function goHall() {
+          renderHall();
+          showScreen("screen-hall");
+        }
+
+        /* ---------- Rooms: choices are cards overlaid on the painting ---------- */
+        function enterRoom(room) {
+          currentRoom = room;
+          $("room-img").src = room.img;
+          $("room-img").alt = room.alt;
+          $("room-task").textContent = room.task;
+
+          var choicesWrap = $("room-choices");
+          choicesWrap.innerHTML = "";
+          room.choices.forEach(function (choice) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "choice-card";
+            btn.setAttribute("aria-label", choice.text);
+            btn.innerHTML =
+              ICONS[choice.icon] +
+              '<span class="choice-label">' + choice.text + "</span>";
+            btn.addEventListener("click", function () { chooseOption(room, choice); });
+            choicesWrap.appendChild(btn);
+          });
+
+          $("room-ribbon").hidden = false;
+          choicesWrap.hidden = false;
+          $("room-feedback-overlay").hidden = true;
+          showScreen("screen-room");
+        }
+
+        function chooseOption(room, choice) {
+          state.visited[room.id] = true;
+          state.visitedCount += 1;
+          state.scores[choice.type] += 1;
+          state.picks.push({ room: room.name, choice: choice.text });
+          $("room-feedback").textContent = choice.feedback;
+          $("room-ribbon").hidden = true;
+          $("room-choices").hidden = true;
+          $("room-feedback-overlay").hidden = false;
+        }
+
+        /* ---------- Magic Card ---------- */
+        function winningType() {
+          var best = null;
+          var bestScore = -1;
+          TIE_ORDER.forEach(function (type) {
+            if (state.scores[type] > bestScore) {
+              bestScore = state.scores[type];
+              best = type;
+            }
+          });
+          return best;
+        }
+
+        function showCard() {
+          var card = CARDS[winningType()];
+          $("card-art").src = card.img;
+          $("card-art").alt = card.alt;
+          $("card-title").textContent = card.title;
+          $("card-desc").textContent = card.desc;
+          $("card-date").textContent = new Date().toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          });
+          var recap = $("card-recap");
+          recap.innerHTML = "";
+          state.picks.forEach(function (pick) {
+            var li = document.createElement("li");
+            var roomSpan = document.createElement("span");
+            roomSpan.className = "recap-room";
+            roomSpan.textContent = pick.room;
+            li.appendChild(roomSpan);
+            li.appendChild(document.createTextNode(" — " + pick.choice));
+            recap.appendChild(li);
+          });
+          showScreen("screen-card");
+        }
+
+        /* ---------- Sparkles ---------- */
+        function buildSparkles() {
+          var fields = document.querySelectorAll("[data-sparkles]");
+          fields.forEach(function (field) {
+            for (var i = 0; i < 16; i++) {
+              var s = document.createElement("span");
+              s.className = "sparkle";
+              var size = 5 + Math.random() * 9;
+              s.style.width = size + "px";
+              s.style.height = size + "px";
+              s.style.left = Math.random() * 100 + "%";
+              s.style.top = 15 + Math.random() * 80 + "%";
+              s.style.animationDuration = 3.4 + Math.random() * 3.6 + "s";
+              s.style.animationDelay = -Math.random() * 6 + "s";
+              field.appendChild(s);
+            }
+          });
+        }
+
+        /* ---------- Wiring ---------- */
+        var entering = false;
+        $("hs-entrance-door").addEventListener("click", function () {
+          if (entering) { return; }
+          entering = true;
+          // The painted door glows with warm light, then we fade into the Hall.
+          $("entrance-door-glow").classList.add("lit");
+          $("hs-entrance-door").classList.add("lit");
+          window.setTimeout(function () {
+            goHall();
+            window.setTimeout(function () {
+              $("entrance-door-glow").classList.remove("lit");
+              $("hs-entrance-door").classList.remove("lit");
+              entering = false;
+            }, 650);
+          }, 900);
+        });
+        $("btn-back-hall").addEventListener("click", goHall);
+        $("btn-discover").addEventListener("click", showCard);
+        $("btn-play-again").addEventListener("click", function () {
+          resetState();
+          renderHall();
+          showScreen("screen-entrance");
+        });
+
+        renderHall();
+        buildSparkles();
+      })();
+    </script>
+  </body>
+</html>
